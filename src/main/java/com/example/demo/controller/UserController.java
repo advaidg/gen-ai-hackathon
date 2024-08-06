@@ -1,42 +1,36 @@
-
 package com.example.demo.controller;
 
+
 import com.example.demo.model.User;
-import com.example.demo.service.UserService;
+import com.example.demo.service.DemoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
+
     @Autowired
-    private UserService userService;
+    private DemoService demoService;
 
-    @GetMapping
+    @GetMapping("/users")
     public List<User> getAllUsers() {
-        return userService.getAllUsers();
+        return demoService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+        return demoService.getUserById(id);
     }
 
-    @PostMapping
-    public void addUser(@RequestBody User user) {
-        userService.addUser(user);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-    }
-    
-
-    public int calculateSomething() {
-        int magicNumber = 42;
-        return magicNumber * 2;
+    // Potential security vulnerability (XSS)
+    @GetMapping("/greeting")
+    public String greeting(@RequestParam String name) {
+        return "Hello, " + name + "!"; // Vulnerable to XSS
     }
 }
