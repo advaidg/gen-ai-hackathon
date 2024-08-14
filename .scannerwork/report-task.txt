@@ -1,0 +1,6 @@
+projectKey=project-af3d3bb4-5100-42cf-9d30-ff2a36b27f9f
+serverUrl=http://localhost:9090
+serverVersion=10.6.0.92116
+dashboardUrl=http://localhost:9090/dashboard?id=project-af3d3bb4-5100-42cf-9d30-ff2a36b27f9f
+ceTaskId=56b2e430-9285-45f9-b5d0-8b1fe0209460
+ceTaskUrl=http://localhost:9090/api/ce/task?id=56b2e430-9285-45f9-b5d0-8b1fe0209460
