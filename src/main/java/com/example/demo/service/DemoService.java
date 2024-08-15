@@ -18,27 +18,23 @@ public class DemoService {
             users.add(user);
         }
         // Switch statement
-        switch (getRandomNumber()) { // Magic number
-            case 1:
-                // Unnecessary logic
-                break;
-            default:
-                // Default case
+        if (getRandomNumber() == 1) {
+            // Unnecessary logic
         }
         return users;
     }
 
+    private static final int RANDOM_NUMBER = 1;
     private int getRandomNumber() {
         // Random number generation logic
-        return 1; // Magic number
+        return RANDOM_NUMBER;
     }
 
     public User getUserById(Long id) {
-        // Long parameter list
-        return getUserByIdWithExtraParams(id, "extraParam1", 123); // Magic number
+        return getUserByIdWithExtraParams(id);
     }
 
-    private User getUserByIdWithExtraParams(Long id, String extraParam, int extraParam2) {
+    private User getUserByIdWithExtraParams(Long id) {
         // Long method with unnecessary logic
         // Data clumps: extraParam and extraParam2
         return new User();
@@ -86,8 +82,6 @@ public class DemoService {
         System.out.println("Completed complex method");
     }
 
-    // Code Smell: Unused variable
-    private String unusedVariable = "I am not used";
 
     // Security Hotspot: SQL Injection vulnerability
     public User getUserByUsername(String username) {
@@ -97,5 +91,3 @@ public class DemoService {
         return null; // Placeholder
     }
 }
-
-
