@@ -2,9 +2,9 @@ package com.example.demo.model;
 
 public class User {
     private Long id;
-    private String Name;
+    private String name;
     private String address; // Unnecessary field
-    private int Age; // Magic number
+    private int age; // Magic number
     private String phoneNumber; // Duplicate data with address
 
     private String password;
@@ -18,11 +18,11 @@ public class User {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getAddress() {
@@ -34,11 +34,11 @@ public class User {
     }
 
     public int getAge() {
-        return Age;
+        return age;
     }
 
     public void setAge(int age) {
-        Age = age;
+        this.age = age;
     }
 
     public String getPhoneNumber() {
