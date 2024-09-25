@@ -8,6 +8,8 @@ import java.util.List;
 @Service
 public class DemoService {
 
+    private static final int DEFAULT_RANDOM_NUMBER = 1;
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         // Long method with unnecessary logic
@@ -18,19 +20,15 @@ public class DemoService {
             users.add(user);
         }
         // Switch statement
-        switch (getRandomNumber()) { // Magic number
-            case 1:
-                // Unnecessary logic
-                break;
-            default:
-                // Default case
+        if (getRandomNumber() == 1) {
+            // Unnecessary logic
         }
         return users;
     }
 
     private int getRandomNumber() {
         // Random number generation logic
-        return 1; // Magic number
+        return DEFAULT_RANDOM_NUMBER; // Magic number
     }
 
     public User getUserById(Long id) {
@@ -87,7 +85,7 @@ public class DemoService {
     }
 
     // Code Smell: Unused variable
-    private String unusedVariable = "I am not used";
+    // private String unusedVariable = "I am not used";
 
     // Security Hotspot: SQL Injection vulnerability
     public User getUserByUsername(String username) {
@@ -97,5 +95,3 @@ public class DemoService {
         return null; // Placeholder
     }
 }
-
-
