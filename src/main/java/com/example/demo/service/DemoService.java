@@ -1,101 +1,110 @@
 package com.example.demo.service;
-import com.example.demo.model.User;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import com.example.demo.model.User;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class DemoService {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate; // SQL Optimizations: Using prepared statements to avoid SQL injection issues
+    @Autowired
+    private PasswordEncoder passwordEncoder; // For securely handling passwords
+
+    // Fixed implementation of the getAllUsers method using Java Streams instead of loops
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        // Long method with unnecessary logic
-        for (int i = 0; i < 10; i++) { // Magic number
-            User user = new User();
-            user.setId((long) i);
-            user.setName("User " + i);
-            users.add(user);
-        }
-        // Switch statement
-        switch (getRandomNumber()) { // Magic number
-            case 1:
-                // Unnecessary logic
-                break;
-            default:
-                // Default case
-        }
-        return users;
+        final int userLimit = 10; // Removed magic number.
+        
+        // Create users using IntStream and map to User without manual iteration
+        return IntStream.range(0, userLimit)
+                .mapToObj(i -> {
+                    User user = new User();
+                    user.setId((long) i);
+                    user.setName("User " + i);
+                    return user;
+                })
+                .collect(Collectors.toList());
     }
 
     private int getRandomNumber() {
-        // Random number generation logic
-        return 1; // Magic number
+        // Secure random number generation (// placeholder; could use ThreadLocalRandom or SecureRandom based on need)
+        // Proper randomization logic should be used if important
+        return (int) (Math.random() * 10); // Replacing magic number with random 0-9; adjust based on business logic requirements
     }
 
+    // Fixed long parameter list problem
     public User getUserById(Long id) {
-        // Long parameter list
-        return getUserByIdWithExtraParams(id, "extraParam1", 123); // Magic number
+        // Removed magic number and data clump issue by refactoring `getUserByIdWithExtraParams`
+        return getUserByIdWithoutExtras(id);
     }
 
-    private User getUserByIdWithExtraParams(Long id, String extraParam, int extraParam2) {
-        // Long method with unnecessary logic
-        // Data clumps: extraParam and extraParam2
-        return new User();
+    private User getUserByIdWithoutExtras(Long id) {
+        // Simulate fetching user by ID (replace with actual repository call)
+        return new User(); // Example, replace with actual functionality like userRepository.findById(id)
     }
+    
+    // Badly designed methods removed/refactored
 
-    // God class example (avoid in real projects)
-    public void doEverything() {
-        // Lots of unrelated logic here
-    }
+    // Removed 'doEverything' God class anti-pattern
 
-    // Potential performance bottleneck
+    // Fixed inefficient method problem
     public void inefficientMethod() {
-        // Extremely inefficient algorithm or data structure
-        List<Integer> largeList = new ArrayList<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            largeList.add(i);
-        }
-        // ...
+        // Removed unnecessary large list creation; If large data processing is needed, use streams, parallelism, or batch processing.
     }
 
-    // Potential security vulnerability (SQL injection)
+    // Fixed SQL Injection vulnerability using prepared statements
     public List<User> getUsersByQuery(String query) {
-        // Vulnerable code:
-        String sql = "SELECT * FROM users WHERE name LIKE '%" + query + "%'";
-
-        return new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE name LIKE ?";
+        // Using prepared statements for security against SQL injection
+        return jdbcTemplate.query(sql, new Object[] { "%" + query + "%" }, (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getLong("id"));
+            user.setName(rs.getString("name"));
+            return user;
+        });
     }
+
+    // Fixed issue by encoding password securely
     public String getUserPassword(Long id) {
         User user = getUserById(id);
-        // Assume User class has a getPassword method
-        return user != null ? user.getPassword() : null;
+        return user != null ? passwordEncoder.encode(user.getPassword()) : null;
     }
 
-    // Code Smell: Method with too many responsibilities
+    // Refactored complexMethod() by extracting concerns and avoiding too many responsibilities
     public void complexMethod() {
-        // Log some information
+        logStart();
+        performComplexTask();
+        logCompletion();
+    }
+
+    private void logStart() {
         System.out.println("Starting complex method");
+    }
 
-        // Perform a complex task
-        for (int i = 0; i < 1000; i++) {
-            System.out.println("Processing " + i);
-        }
+    private void performComplexTask() {
+        IntStream.range(0, 1000).forEach(i -> System.out.println("Processing " + i));
+    }
 
-        // Log completion
+    private void logCompletion() {
         System.out.println("Completed complex method");
     }
 
-    // Code Smell: Unused variable
-    private String unusedVariable = "I am not used";
-
-    // Security Hotspot: SQL Injection vulnerability
+    // Removed unused variable
+    
+    // Fixed SQL injection vulnerability in getUserByUsername using prepared statements
     public User getUserByUsername(String username) {
-        String query = "SELECT * FROM users WHERE username = '" + username + "'";
-        // Execute query and return result (pseudo code)
-        // return database.executeQuery(query);
-        return null; // Placeholder
+        String query = "SELECT * FROM users WHERE username = ?";
+        return jdbcTemplate.queryForObject(query, new Object[] { username }, (rs, rowNum) -> {
+            User user = new User();
+            user.setId(rs.getLong("id"));
+            user.setUsername(rs.getString("username"));
+            return user;
+        });
     }
 }
-
-
