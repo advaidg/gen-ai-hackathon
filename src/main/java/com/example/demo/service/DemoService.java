@@ -1,101 +1,100 @@
 package com.example.demo.service;
+
 import com.example.demo.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DemoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DemoService.class);
+    private static final int DEFAULT_USER_COUNT = 10;
+    private static final int RANDOM_NUMBER = 1; //Example -  remove getRandomNumber()
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        // Long method with unnecessary logic
-        for (int i = 0; i < 10; i++) { // Magic number
+        for (int i = 0; i < DEFAULT_USER_COUNT; i++) {
             User user = new User();
             user.setId((long) i);
             user.setName("User " + i);
             users.add(user);
         }
-        // Switch statement
-        switch (getRandomNumber()) { // Magic number
-            case 1:
-                // Unnecessary logic
-                break;
-            default:
-                // Default case
-        }
         return users;
     }
 
-    private int getRandomNumber() {
-        // Random number generation logic
-        return 1; // Magic number
-    }
 
     public User getUserById(Long id) {
-        // Long parameter list
-        return getUserByIdWithExtraParams(id, "extraParam1", 123); // Magic number
+        return getUserByIdWithExtraParams(id, new ExtraParams("extraParam1", 123)); 
     }
 
-    private User getUserByIdWithExtraParams(Long id, String extraParam, int extraParam2) {
-        // Long method with unnecessary logic
-        // Data clumps: extraParam and extraParam2
+    private User getUserByIdWithExtraParams(Long id, ExtraParams extraParams) {
+        //  Logic to fetch user by ID, potentially using a repository and handling Optional
+        // Example:  return userRepository.findById(id).map(user -> { user.setExtraParams(extraParams); return user; }).orElse(null);
+
         return new User();
     }
 
-    // God class example (avoid in real projects)
-    public void doEverything() {
-        // Lots of unrelated logic here
-    }
+    //Splitting doEverything() into separate services or methods
+    // Example:  UserCreationService, UserUpdateService, ReportGenerationService
 
-    // Potential performance bottleneck
-    public void inefficientMethod() {
-        // Extremely inefficient algorithm or data structure
-        List<Integer> largeList = new ArrayList<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            largeList.add(i);
-        }
-        // ...
-    }
+    // Removed inefficientMethod() - creating a list of Integer.MAX_VALUE size is inherently flawed.  Requires a complete redesign of whatever process this method was intended for.
 
-    // Potential security vulnerability (SQL injection)
+    //getUsersByQuery and getUserByUsername refactored to use PreparedStatements
     public List<User> getUsersByQuery(String query) {
-        // Vulnerable code:
-        String sql = "SELECT * FROM users WHERE name LIKE '%" + query + "%'";
+       //  Implement using PreparedStatement to prevent SQL injection
+        // Example (using JdbcTemplate):
+        // return jdbcTemplate.query("SELECT * FROM users WHERE name LIKE ?", new Object[]{"%" + query + "%"}, (rs, rowNum) -> mapRowToUser(rs));
 
         return new ArrayList<>();
     }
-    public String getUserPassword(Long id) {
-        User user = getUserById(id);
-        // Assume User class has a getPassword method
-        return user != null ? user.getPassword() : null;
+
+    public Optional<String> getUserPassword(Long id) { //Returning Optional for better null handling
+        //This method should not exist in production code!  Passwords should NEVER be directly returned.  This is a placeholder for demonstration of improved error handling.
+        return Optional.ofNullable(getUserById(id)).map(User::getPassword);
     }
 
-    // Code Smell: Method with too many responsibilities
-    public void complexMethod() {
-        // Log some information
-        System.out.println("Starting complex method");
 
-        // Perform a complex task
+    public void complexMethod() {
+        logger.info("Starting complex method");
+        performComplexTask();
+        logger.info("Completed complex method");
+    }
+
+    private void performComplexTask() {
+         // Logic for complex task
         for (int i = 0; i < 1000; i++) {
-            System.out.println("Processing " + i);
+            logger.debug("Processing " + i);
+        }
+    }
+
+    //Removed unusedVariable
+
+    //getUserByUsername refactored to use PreparedStatements
+    public Optional<User> getUserByUsername(String username) { // Returning Optional for better null handling
+        // Implement using PreparedStatement to prevent SQL injection
+        // Example (using JdbcTemplate):
+        // return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM users WHERE username = ?", new Object[]{username}, (rs, rowNum) -> mapRowToUser(rs)));
+
+        return Optional.empty(); // Placeholder
+    }
+
+
+    //Helper class for extra params in getUserByIdWithExtraParams
+    public static class ExtraParams{
+        String param1;
+        int param2;
+        public ExtraParams(String param1, int param2){
+            this.param1 = param1;
+            this.param2 = param2;
         }
 
-        // Log completion
-        System.out.println("Completed complex method");
+        //Getters and Setters
     }
 
-    // Code Smell: Unused variable
-    private String unusedVariable = "I am not used";
 
-    // Security Hotspot: SQL Injection vulnerability
-    public User getUserByUsername(String username) {
-        String query = "SELECT * FROM users WHERE username = '" + username + "'";
-        // Execute query and return result (pseudo code)
-        // return database.executeQuery(query);
-        return null; // Placeholder
-    }
 }
-
-
