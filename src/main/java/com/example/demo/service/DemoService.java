@@ -1,5 +1,8 @@
 package com.example.demo.service;
+
 import com.example.demo.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,94 +11,98 @@ import java.util.List;
 @Service
 public class DemoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DemoService.class);
+    private static final int DEFAULT_USER_COUNT = 10;
+    private static final int RANDOM_NUMBER = 1; //  Constant replacing getRandomNumber()
+
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        // Long method with unnecessary logic
-        for (int i = 0; i < 10; i++) { // Magic number
+        for (int i = 0; i < DEFAULT_USER_COUNT; i++) {
             User user = new User();
             user.setId((long) i);
             user.setName("User " + i);
             users.add(user);
         }
-        // Switch statement
-        switch (getRandomNumber()) { // Magic number
-            case 1:
-                // Unnecessary logic
-                break;
-            default:
-                // Default case
-        }
         return users;
     }
 
-    private int getRandomNumber() {
-        // Random number generation logic
-        return 1; // Magic number
-    }
 
     public User getUserById(Long id) {
-        // Long parameter list
-        return getUserByIdWithExtraParams(id, "extraParam1", 123); // Magic number
+        return new User(); //  Simplified getUserById - no extra parameters needed.
     }
 
-    private User getUserByIdWithExtraParams(Long id, String extraParam, int extraParam2) {
-        // Long method with unnecessary logic
-        // Data clumps: extraParam and extraParam2
-        return new User();
-    }
+    //doEverything() method removed as per SRP guidelines.  Functionality should be broken into smaller, more focused methods.
 
-    // God class example (avoid in real projects)
-    public void doEverything() {
-        // Lots of unrelated logic here
-    }
+    // inefficientMethod() removed; creating a list of size Integer.MAX_VALUE is inherently flawed.  The logic needs a complete redesign.
 
-    // Potential performance bottleneck
-    public void inefficientMethod() {
-        // Extremely inefficient algorithm or data structure
-        List<Integer> largeList = new ArrayList<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            largeList.add(i);
-        }
-        // ...
-    }
-
-    // Potential security vulnerability (SQL injection)
+    // getUsersByQuery() refactored to prevent SQL injection
     public List<User> getUsersByQuery(String query) {
-        // Vulnerable code:
-        String sql = "SELECT * FROM users WHERE name LIKE '%" + query + "%'";
+        //  Implementation using PreparedStatement (requires database connection setup)
 
-        return new ArrayList<>();
+        // ... Database connection and prepared statement setup
+        // String sql = "SELECT * FROM users WHERE name LIKE ?";
+        // PreparedStatement statement = connection.prepareStatement(sql);
+        // statement.setString(1, "%" + query + "%");
+        // ResultSet resultSet = statement.executeQuery();
+        // ... Process resultSet to create a list of users
+        // ... Close resources (resultSet, statement, connection)
+
+        return new ArrayList<>(); // Placeholder, replace with actual database query using prepared statement.
     }
-    public String getUserPassword(Long id) {
+
+    // getUserPassword() method modified to not return the password directly - a serious security vulnerability.
+    //This would require changes in the User class as well and is beyond the scope of this example,
+    //because we have no documentation about the User class.  The best practice is to avoid storing
+    //passwords in clear text.  Hashing is required.
+    public boolean authenticateUser(Long id, String passwordAttempt){
         User user = getUserById(id);
-        // Assume User class has a getPassword method
-        return user != null ? user.getPassword() : null;
+        if(user == null) return false;
+        //return user.getPassword().equals(passwordAttempt); //Avoid this!  Insecure.
+
+        //Instead, compare hashes here.  Example (requires appropriate hashing library):
+        // return PasswordHasher.verifyPassword(passwordAttempt, user.getPasswordHash());
+        return false; // Placeholder
     }
 
-    // Code Smell: Method with too many responsibilities
-    public void complexMethod() {
-        // Log some information
-        System.out.println("Starting complex method");
 
-        // Perform a complex task
+    // complexMethod() refactored to separate logging and complex task
+    public void complexTask(){
         for (int i = 0; i < 1000; i++) {
-            System.out.println("Processing " + i);
+            logger.info("Processing {}", i); // Using logger for better logging
         }
-
-        // Log completion
-        System.out.println("Completed complex method");
     }
 
-    // Code Smell: Unused variable
-    private String unusedVariable = "I am not used";
+    public void complexMethod() {
+        logger.info("Starting complex method");
+        complexTask();
+        logger.info("Completed complex method");
+    }
 
-    // Security Hotspot: SQL Injection vulnerability
+    // unusedVariable field removed.
+
+    // getUserByUsername() refactored to prevent SQL injection
     public User getUserByUsername(String username) {
-        String query = "SELECT * FROM users WHERE username = '" + username + "'";
-        // Execute query and return result (pseudo code)
-        // return database.executeQuery(query);
-        return null; // Placeholder
+        // Implementation using PreparedStatement (requires database connection setup)
+        // String query = "SELECT * FROM users WHERE username = ?";
+        // PreparedStatement statement = connection.prepareStatement(query);
+        // statement.setString(1, username);
+        // ResultSet resultSet = statement.executeQuery();
+        // ... Process resultSet to retrieve user details
+        // ... Close resources (resultSet, statement, connection)
+
+        return null; // Placeholder, replace with actual database query using prepared statement.
     }
 }
 
 
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>2.0.7</version> <!-- Or latest version -->
+</dependency>
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-simple</artifactId>
+    <version>2.0.7</version> <!-- Or latest version -->
+</dependency>
