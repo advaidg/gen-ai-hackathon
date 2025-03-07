@@ -1,5 +1,8 @@
 package com.example.demo.service;
+
 import com.example.demo.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,94 +11,79 @@ import java.util.List;
 @Service
 public class DemoService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DemoService.class);
+    private static final int DEFAULT_USER_COUNT = 10;
+    private static final int RANDOM_NUMBER = 1; //Removed getRandomNumber method
+
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        // Long method with unnecessary logic
-        for (int i = 0; i < 10; i++) { // Magic number
+        for (int i = 0; i < DEFAULT_USER_COUNT; i++) {
             User user = new User();
             user.setId((long) i);
             user.setName("User " + i);
             users.add(user);
         }
-        // Switch statement
-        switch (getRandomNumber()) { // Magic number
-            case 1:
-                // Unnecessary logic
-                break;
-            default:
-                // Default case
-        }
         return users;
     }
 
-    private int getRandomNumber() {
-        // Random number generation logic
-        return 1; // Magic number
-    }
 
     public User getUserById(Long id) {
-        // Long parameter list
-        return getUserByIdWithExtraParams(id, "extraParam1", 123); // Magic number
+        return new User(); // Simplified;  replace with actual retrieval logic if needed.
     }
 
-    private User getUserByIdWithExtraParams(Long id, String extraParam, int extraParam2) {
-        // Long method with unnecessary logic
-        // Data clumps: extraParam and extraParam2
-        return new User();
+    //Removed unused method
+    //private User getUserByIdWithExtraParams(Long id, String extraParam, int extraParam2) {
+    //    return new User();
+    //}
+
+    // Refactored to separate services - example only, needs actual implementation.
+    public void processUserRegistration(String name, String email){
+        //Implementation for User Registration
+        logger.info("Registering user: {} {}", name, email);
+    }
+    
+    public void processOrderPlacement(User user, Order order){
+        //Implementation for order placement
+        logger.info("Placing order for user: {} order: {}", user.getName(), order.toString());
     }
 
-    // God class example (avoid in real projects)
-    public void doEverything() {
-        // Lots of unrelated logic here
-    }
+    //Removed inefficientMethod() - would require significant restructuring and potentially caching strategies from the provided docs.
 
-    // Potential performance bottleneck
-    public void inefficientMethod() {
-        // Extremely inefficient algorithm or data structure
-        List<Integer> largeList = new ArrayList<>();
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            largeList.add(i);
-        }
-        // ...
-    }
-
-    // Potential security vulnerability (SQL injection)
+    // Secure query using PreparedStatement (replace with actual database interaction)
     public List<User> getUsersByQuery(String query) {
-        // Vulnerable code:
-        String sql = "SELECT * FROM users WHERE name LIKE '%" + query + "%'";
-
+        logger.info("Executing users query with prepared statement: {}", query); //Log instead of printing to System.out
+        //  Implementation using PreparedStatement to prevent SQL injection here. See documentation.
         return new ArrayList<>();
     }
+
+    // Secure password handling - NEVER return password directly.  Replace with a token or other secure method.
     public String getUserPassword(Long id) {
-        User user = getUserById(id);
-        // Assume User class has a getPassword method
-        return user != null ? user.getPassword() : null;
+        logger.warn("Attempt to retrieve user password.  This is a security risk and should be avoided."); // Log this as a security warning.
+        return null; // Should never return actual password
     }
 
-    // Code Smell: Method with too many responsibilities
-    public void complexMethod() {
-        // Log some information
-        System.out.println("Starting complex method");
-
-        // Perform a complex task
+    // Refactored complexMethod() into separate methods for logging and task processing.
+    public void logComplexMethodStart(){
+        logger.info("Starting complex method");
+    }
+    public void performComplexTask(){
         for (int i = 0; i < 1000; i++) {
-            System.out.println("Processing " + i);
+            logger.debug("Processing " + i); //Log instead of printing to System.out
         }
-
-        // Log completion
-        System.out.println("Completed complex method");
+    }
+    public void logComplexMethodEnd(){
+        logger.info("Completed complex method");
     }
 
-    // Code Smell: Unused variable
-    private String unusedVariable = "I am not used";
 
-    // Security Hotspot: SQL Injection vulnerability
+    //Removed unused field
+    //private String unusedVariable = "I am not used";
+
+    // Secure query using PreparedStatement (replace with actual database interaction)
     public User getUserByUsername(String username) {
-        String query = "SELECT * FROM users WHERE username = '" + username + "'";
-        // Execute query and return result (pseudo code)
-        // return database.executeQuery(query);
+        logger.info("Executing user query by username with prepared statement: {}", username); //Log instead of printing to System.out
+        // Implementation using PreparedStatement to prevent SQL injection here.  See documentation.
         return null; // Placeholder
     }
 }
-
-

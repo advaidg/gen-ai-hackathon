@@ -1,13 +1,16 @@
 package com.example.demo.model;
 
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+
 public class User {
     private Long id;
-    private String Name;
-    private String address; // Unnecessary field
-    private int Age; // Magic number
-    private String phoneNumber; // Duplicate data with address
+    private String name;
+    private int userAge; // Renamed and clarified
+    private String phoneNumber;
 
-    private String password;
+    private String encryptedPassword; // Store password securely
+
+    public User() {} // Added a no-args constructor
 
     public Long getId() {
         return id;
@@ -18,27 +21,19 @@ public class User {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public int getUserAge() {
+        return userAge;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getAge() {
-        return Age;
-    }
-
-    public void setAge(int age) {
-        Age = age;
+    public void setUserAge(int userAge) {
+        this.userAge = userAge;
     }
 
     public String getPhoneNumber() {
@@ -49,11 +44,23 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPassword() {
-        return password;
+    // Secure password handling
+    public String getEncryptedPassword() {
+        return encryptedPassword;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        //  In a real-world scenario, this password would be fetched securely from a secrets manager.  
+        //  Hardcoding is done here ONLY for demonstration purposes.  NEVER hardcode passwords in production.
+        encryptor.setPassword("your_strong_password");  
+        this.encryptedPassword = encryptor.encrypt(password);
+    }
+
+
+    public String getPassword(){
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword("your_strong_password");
+        return encryptor.decrypt(this.encryptedPassword);
     }
 }
